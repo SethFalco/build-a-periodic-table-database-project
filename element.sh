@@ -16,5 +16,11 @@ fi
 
 DATA=$($PSQL "SELECT atomic_number, name, symbol, type, atomic_mass, melting_point_celsius, boiling_point_celsius FROM elements INNER JOIN properties USING(atomic_number) INNER JOIN types USING(type_id) $WHERE;")
 
+if [[ -z $DATA ]]
+then
+  echo 'I could not find that element in the database.'
+  exit
+fi
+
 IFS='|' read ATOMIC_NUMBER NAME SYMBOL TYPE MASS MPC BPC <<< $DATA
 echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MPC celsius and a boiling point of $BPC celsius."
